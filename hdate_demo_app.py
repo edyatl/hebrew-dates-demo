@@ -46,10 +46,12 @@ class HebrewDemo(tk.Tk):
             lat, lon, tz, elev = self.locations.get(loc_name, (31.778, 35.236, "Asia/Jerusalem", 750))
             
             loc = hdate.Location(name=loc_name, latitude=lat, longitude=lon,
-                               timezone=tz, altitude=elev)
+                               timezone=tz, altitude=elev, diaspora=False)
             
-            h = hdate.HDateInfo(gdate)                    # Basic Hebrew date
-            z = hdate.Zmanim(date=gdate, location=loc)   # Zmanim
+            h = hdate.HDateInfo(date=gdate, location=loc)                    # Basic Hebrew date
+            
+            sunrise = h.zmanim.get('sunrise', 'Not available')
+            sunset = h.zmanim.get('sunset', 'Not available')
             
             # Bar Mitzvah (simple +13 Hebrew years)
             bm_heb = h.hdate.replace(year=h.hdate.year + 13)  # rough, you can refine
@@ -57,12 +59,12 @@ class HebrewDemo(tk.Tk):
             output = f"""RESULTS for {gdate}
 
 Hebrew Date:
-{h}
+{h.hdate}
 
 Zmanim ({loc_name}):
-Sunrise:     {z.sunrise}
-Sunset:      {z.sunset}
-Nightfall:   {z.nightfall}   (or your preferred method)
+Sunrise:     {sunrise}
+Sunset:      {sunset}
+Nightfall:   Not available
 
 Bar Mitzvah Date (approx +13 Hebrew years):
 {bm_heb}
@@ -74,3 +76,4 @@ This demo runs 100% locally using the py-libhdate library.
             
         except Exception as e:
             messagebox.showerror("Error", str(e))
+```
