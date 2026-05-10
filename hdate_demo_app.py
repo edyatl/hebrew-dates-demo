@@ -76,6 +76,4 @@ This demo runs 100% locally using the py-libhdate library.
             
         except Exception as e:
             messagebox.showerror("Error", str(e))
-
-# Added a new line at the end of the file to prevent syntax error
 ```
