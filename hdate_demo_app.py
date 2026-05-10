@@ -46,15 +46,15 @@ class HebrewDemo(tk.Tk):
             lat, lon, tz, elev = self.locations.get(loc_name, (31.778, 35.236, "Asia/Jerusalem", 750))
             
             loc = hdate.Location(name=loc_name, latitude=lat, longitude=lon,
-                               timezone=tz, elevation=elev)
+                               timezone=tz, altitude=elev)
             
             h = hdate.HDateInfo(gdate)                    # Basic Hebrew date
             z = hdate.Zmanim(date=gdate, location=loc)   # Zmanim
             
             # Bar Mitzvah (simple +13 Hebrew years)
-            bm_heb = h.hdate + hdate.HebrewDate(13, 0, 0)  # rough, you can refine
+            bm_heb = h.hdate.replace(year=h.hdate.year + 13)  # rough, you can refine
             
-            output = f"""📅 RESULTS for {gdate}
+            output = f"""RESULTS for {gdate}
 
 Hebrew Date:
 {h}
