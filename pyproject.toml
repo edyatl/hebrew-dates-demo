@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=72", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+# ---------------------------------------------
+# PROJECT METADATA  (PEP 621)
+# ---------------------------------------------
+[project]
+name = "hebrew-dates-demo"
+dynamic = ["version"]
+description = "Simple desktop demo for the hdate Hebrew calendar library."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" } 
+authors = [
+    { name = "Yevgeny Dyatlov", email = "edyatl@yandex.ru" },
+]
+keywords = [
+    "hebrew-calendar", "jewish-calendar", "zmanim", "jewish-holidays",
+    "hebrew-date", "shabbat", "bar-mitzvah", "jewish", "calendar"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Desktop",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent", 
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Desktop Environment",
+    "Topic :: Religion",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "hdate==1.2.1", 
+    "tkcalendar==1.6.1", 
+]
+
+[project.urls]
+Homepage       = "https://github.com/edyatl/hebrew-dates-demo"
+Repository     = "https://github.com/edyatl/hebrew-dates-demo"
+"Bug Tracker"  = "https://github.com/edyatl/hebrew-dates-demo/issues"
+Changelog      = "https://github.com/edyatl/hebrew-dates-demo/releases"
+
+[project.scripts]
+hebrew-demo = "main:run_app"
+
+# ---------------------------------------------
+# OPTIONAL / DEV DEPENDENCIES  (PEP 631)
+# ---------------------------------------------
+[project.optional-dependencies]
+dev = [
+    "build>=1.2",
+    "twine>=5",
+    "setuptools-scm>=8",
+    "pyinstaller>=6.10",      # For building standalone apps
+]
+#test = [
+    #"pytest>=8",
+    #"pytest-cov>=5",
+#]
+
+# ---------------------------------------------
+# SETUPTOOLS CONFIG
+# ---------------------------------------------
+[tool.setuptools.packages.find]
+where   = ["."]
+
+# ---------------------------------------------
+# DYNAMIC VERSIONING via setuptools-scm
+# ---------------------------------------------
+[tool.setuptools_scm]
+# Derives version from git tags (e.g. `git tag v1.2.3`)
+# Writes _version.py so the installed package can read it at runtime
+write_to = "_version.py"
+version_scheme  = "post-release"
+local_scheme    = "dirty-tag"
+
+# ---------------------------------------------
+# RUFF 
+# ---------------------------------------------
+[tool.ruff]
+line-length    = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "D", "UP", "B", "SIM", "PL", "RUF"]
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.format]
+quote-style = "double"
+
+# ---------------------------------------------
+# MYPY
+# ---------------------------------------------
+[tool.mypy]
+python_version      = "3.12"
+warn_return_any     = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+# ---------------------------------------------
+# PYTEST
+# ---------------------------------------------
+#[tool.pytest.ini_options]
+#testpaths = ["tests"]
