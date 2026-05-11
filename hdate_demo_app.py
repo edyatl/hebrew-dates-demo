@@ -12,6 +12,17 @@ LOCATIONS: dict[str, tuple[float, float, str, int, bool]] = {
     "Tel Aviv": (32.085, 34.781, "Asia/Jerusalem", 20, False),
     "New York": (40.713, -74.006, "America/New_York", 10, True),
     "London": (51.507, -0.128, "Europe/London", 35, True),
+    # Russia
+    "Moscow": (55.7558, 37.6176, "Europe/Moscow", 156, True),
+    "Saint Petersburg": (59.9343, 30.3351, "Europe/Moscow", 3, True),
+    "Novosibirsk": (55.0084, 82.9357, "Asia/Novosibirsk", 151, True),
+    "Yekaterinburg": (56.8389, 60.6057, "Asia/Yekaterinburg", 237, True),
+    "Kazan": (55.7963, 49.1088, "Europe/Moscow", 116, True),
+    "Nizhny Novgorod": (56.3269, 44.0059, "Europe/Moscow", 151, True),
+    "Chelyabinsk": (55.1644, 61.4368, "Asia/Yekaterinburg", 220, True),
+    "Samara": (53.1959, 50.1008, "Europe/Samara", 100, True),
+    "Omsk": (54.9885, 73.3242, "Asia/Omsk", 87, True),
+    "Rostov-on-Don": (47.2357, 39.7015, "Europe/Moscow", 70, True),
 }
 
 _FALLBACK = LOCATIONS["Jerusalem"]
@@ -96,8 +107,8 @@ class HebrewDemo(tk.Tk):
         z = Zmanim(date=gdate, location=loc)
 
         zmanim_dict = z.zmanim
-        sunrise = zmanim_dict.get("sunrise") or "Not available"
-        sunset = zmanim_dict.get("sunset") or "Not available"
+        sunrise = z.zmanim["netz_hachama"].local or "Not available"
+        sunset = z.zmanim["shkia"].local or "Not available"
         candle_lighting = z.candle_lighting or "Not available"
         havdalah = z.havdalah or "Not available"
 
