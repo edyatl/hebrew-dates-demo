@@ -1,3 +1,5 @@
+babel==2.18.0
 docopt==0.6.2
 hdate==1.2.1
 num2words==0.5.14
+tkcalendar==1.6.1
