@@ -1,11 +1,13 @@
-import tkinter as tk
-from tkinter import messagebox, ttk
-from tkcalendar import DateEntry
-from datetime import date
+"""Hebrew Dates Demo - Desktop application for py-libhdate library."""
+
 import os
 import sys
+import tkinter as tk
+from datetime import date
+from tkinter import messagebox, ttk
 
 from hdate import HDateInfo, HebrewDate, Location, Zmanim
+from tkcalendar import DateEntry
 
 # (lat, lon, timezone, altitude_m, diaspora)
 LOCATIONS: dict[str, tuple[float, float, str, int, bool]] = {
@@ -30,6 +32,8 @@ _FALLBACK = LOCATIONS["Jerusalem"]
 
 
 class HebrewDemo(tk.Tk):
+    """Main window of the Hebrew Dates Demo application."""
+
     def __init__(self) -> None:
         super().__init__()
         self.set_window_icon()
@@ -43,23 +47,24 @@ class HebrewDemo(tk.Tk):
     # UI construction
     # ------------------------------------------------------------------
 
-    def set_window_icon(self):
-            """Set application icon with fallback"""
+    def set_window_icon(self) -> None:
+        """Set application icon with fallback."""
+        try:
+            base_path = getattr(
+                sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__))
+            )
+            icon_path = os.path.join(base_path, "assets", "icon.png")
 
-            try:
-                base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-                icon_path = os.path.join(base_path, "assets", "icon.png")
-                
-                if os.path.exists(icon_path):
-                    icon = tk.PhotoImage(file=icon_path)
-                    self.iconphoto(False, icon)          # Modern & cross-platform
-                else:
-                    # Fallback to .ico on Windows
-                    ico_path = os.path.join(base_path, "assets", "icon.ico")
-                    if os.path.exists(ico_path):
-                        self.iconbitmap(ico_path)
-            except Exception:
-                pass  # Fail silently if icon is missing
+            if os.path.exists(icon_path):
+                icon = tk.PhotoImage(file=icon_path)
+                self.iconphoto(False, icon)  # Modern & cross-platform
+            else:
+                # Fallback to .ico on Windows
+                ico_path = os.path.join(base_path, "assets", "icon.ico")
+                if os.path.exists(ico_path):
+                    self.iconbitmap(ico_path)
+        except Exception:
+            pass  # Fail silently if icon is missing
 
     def _setup_dark_mode(self) -> None:
         style = ttk.Style(self)
@@ -67,22 +72,28 @@ class HebrewDemo(tk.Tk):
         style.configure("TLabel", foreground="#e0e0e0", background="#2d2d2d")
         style.configure("TButton", foreground="#e0e0e0", background="#4a90e2")
         style.map("TButton", background=[("active", "#3a7ab5")])
-        style.configure("TCombobox", foreground="#e0e0e0", background="#2d2d2d", fieldbackground="#2d2d2d")
-        style.map("TCombobox", 
+        style.configure(
+            "TCombobox",
+            foreground="#e0e0e0",
+            background="#2d2d2d",
+            fieldbackground="#2d2d2d",
+        )
+        style.map(
+            "TCombobox",
             fieldbackground=[("readonly", "#2d2d2d")],
             foreground=[("readonly", "#e0e0e0")],
-            background=[("readonly", "#2d2d2d")]
+            background=[("readonly", "#2d2d2d")],
         )
 
     def _build_ui(self) -> None:
         ttk.Label(self, text="Gregorian Date:").pack(pady=5)
         self.date_entry = DateEntry(
-            self, 
-            width=12, 
+            self,
+            width=12,
             bg="#2d2d2d",
             fg="#e0e0e0",
-            borderwidth=2, 
-            date_pattern="yyyy-MM-dd", 
+            borderwidth=2,
+            date_pattern="yyyy-MM-dd",
             headersbackground="#1e1e1e",
             headersforeground="#ffffff",
             selectbackground="#4a90e2",
@@ -92,7 +103,7 @@ class HebrewDemo(tk.Tk):
             weekendbackground="#2d2d2d",
             weekendforeground="#e0e0e0",
             othermonthbackground="#252525",
-            othermonthforeground="#808080"
+            othermonthforeground="#808080",
         )
         self.date_entry.set_date(date.today())
         self.date_entry.pack()
@@ -109,7 +120,12 @@ class HebrewDemo(tk.Tk):
         ttk.Button(self, text="Calculate", command=self._calculate).pack(pady=15)
 
         self.result_text = tk.Text(
-            self, wrap=tk.WORD, height=30, font=("Consolas", 11), bg="#1e1e1e", fg="#e0e0e0"
+            self,
+            wrap=tk.WORD,
+            height=30,
+            font=("Consolas", 11),
+            bg="#1e1e1e",
+            fg="#e0e0e0",
         )
         self.result_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
@@ -121,7 +137,7 @@ class HebrewDemo(tk.Tk):
         try:
             gdate = self.date_entry.get_date()
             output = self._build_output(gdate, self.loc_var.get())
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             messagebox.showerror("Error", str(exc))
             return
 
