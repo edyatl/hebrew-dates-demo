@@ -64,7 +64,7 @@ jobs:
             --collect-all tkcalendar \
             --hidden-import babel.numbers \
             --icon=assets/icon.png \
-            --add-data "assets;assets" \
+            --add-data="assets:assets" \
             main.py
 
       - name: Build app (Windows)
@@ -77,8 +77,8 @@ jobs:
             --name "HebrewDatesDemo" `
             --collect-all tkcalendar `
             --hidden-import babel.numbers `
-            --icon=assets/icon.ico \
-            --add-data "assets;assets" \
+            --icon=assets/icon.ico `
+            --add-data "assets;assets" `
             main.py
 
       - name: Package artifact
