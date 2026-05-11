@@ -142,7 +142,6 @@ class HebrewDemo(tk.Tk):
         h = HDateInfo(date=gdate, diaspora=diaspora)
         z = Zmanim(date=gdate, location=loc)
 
-        zmanim_dict = z.zmanim
         sunrise = z.zmanim["netz_hachama"].local or "Not available"
         sunset = z.zmanim["shkia"].local or "Not available"
         candle_lighting = z.candle_lighting or "Not available"
@@ -179,4 +178,3 @@ class HebrewDemo(tk.Tk):
             f"\n"
             f"Powered by py-libhdate (fully offline).\n"
         )
-
