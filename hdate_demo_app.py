@@ -1,8 +1,9 @@
-# To install the extra dependency, run: pip install tkcalendar
 import tkinter as tk
 from tkinter import messagebox, ttk
 from tkcalendar import DateEntry
 from datetime import date
+import os
+import sys
 
 from hdate import HDateInfo, HebrewDate, Location, Zmanim
 
@@ -31,6 +32,7 @@ _FALLBACK = LOCATIONS["Jerusalem"]
 class HebrewDemo(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
+        self.set_window_icon()
         self.title("Hebrew Dates Demo - Powered by hdate")
         self.geometry("820x680")
         self.configure(background="#2d2d2d")
@@ -40,6 +42,23 @@ class HebrewDemo(tk.Tk):
     # ------------------------------------------------------------------
     # UI construction
     # ------------------------------------------------------------------
+
+    def set_window_icon(self):
+            """Set application icon with fallback"""
+            try:
+                base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+                icon_path = os.path.join(base_path, "assets", "icon.png")
+                
+                if os.path.exists(icon_path):
+                    icon = tk.PhotoImage(file=icon_path)
+                    self.iconphoto(False, icon)          # Modern & cross-platform
+                else:
+                    # Fallback to .ico on Windows
+                    ico_path = os.path.join(base_path, "assets", "icon.ico")
+                    if os.path.exists(ico_path):
+                        self.iconbitmap(ico_path)
+            except Exception:
+                pass  # Fail silently if icon is missing
 
     def _setup_dark_mode(self) -> None:
         style = ttk.Style(self)
