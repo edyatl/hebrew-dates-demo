@@ -1,5 +1,7 @@
+# To install the extra dependency, run: pip install tkcalendar
 import tkinter as tk
 from tkinter import messagebox, ttk
+from tkcalendar import DateEntry
 from datetime import date
 
 from hdate import HDateInfo, HebrewDate, Location, Zmanim
@@ -27,9 +29,9 @@ class HebrewDemo(tk.Tk):
     # ------------------------------------------------------------------
 
     def _build_ui(self) -> None:
-        ttk.Label(self, text="Gregorian Date (YYYY-MM-DD):").pack(pady=5)
-        self.date_entry = ttk.Entry(self)
-        self.date_entry.insert(0, date.today().isoformat())
+        ttk.Label(self, text="Gregorian Date:").pack(pady=5)
+        self.date_entry = DateEntry(self, width=12, bg="darkblue", fg="white", borderwidth=2, date_pattern="yyyy-MM-dd")
+        self.date_entry.set_date(date.today())
         self.date_entry.pack()
 
         ttk.Label(self, text="Location:").pack(pady=5)
@@ -54,7 +56,7 @@ class HebrewDemo(tk.Tk):
 
     def _calculate(self) -> None:
         try:
-            gdate = date.fromisoformat(self.date_entry.get().strip())
+            gdate = self.date_entry.get_date()
             output = self._build_output(gdate, self.loc_var.get())
         except Exception as exc:  # noqa: BLE001
             messagebox.showerror("Error", str(exc))
@@ -115,5 +117,4 @@ class HebrewDemo(tk.Tk):
             f"\n"
             f"Powered by py-libhdate (fully offline).\n"
         )
-
-
+```
