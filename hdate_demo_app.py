@@ -22,15 +22,26 @@ class HebrewDemo(tk.Tk):
         super().__init__()
         self.title("Hebrew Dates Demo - Powered by hdate")
         self.geometry("820x680")
+        self.configure(background="#2d2d2d")
+        self._setup_dark_mode()
         self._build_ui()
 
     # ------------------------------------------------------------------
     # UI construction
     # ------------------------------------------------------------------
 
+    def _setup_dark_mode(self) -> None:
+        style = ttk.Style(self)
+        style.theme_use("clam")
+        style.configure("TLabel", foreground="#e0e0e0", background="#2d2d2d")
+        style.configure("TButton", foreground="#e0e0e0", background="#4a90e2")
+        style.map("TButton", background=[("active", "#3a7ab5")])
+        style.configure("TCombobox", foreground="#e0e0e0", background="#2d2d2d", fieldbackground="#2d2d2d")
+        style.map("TCombobox", background=[("readonly", "#2d2d2d")])
+
     def _build_ui(self) -> None:
         ttk.Label(self, text="Gregorian Date:").pack(pady=5)
-        self.date_entry = DateEntry(self, width=12, bg="darkblue", fg="white", borderwidth=2, date_pattern="yyyy-MM-dd")
+        self.date_entry = DateEntry(self, width=12, bg="#1e1e1e", fg="#e0e0e0", borderwidth=2, date_pattern="yyyy-MM-dd", header_color="#4a90e2", calendar_color="#2d2d2d", selectbackground="#4a90e2", selectforeground="#e0e0e0")
         self.date_entry.set_date(date.today())
         self.date_entry.pack()
 
@@ -46,7 +57,7 @@ class HebrewDemo(tk.Tk):
         ttk.Button(self, text="Calculate", command=self._calculate).pack(pady=15)
 
         self.result_text = tk.Text(
-            self, wrap=tk.WORD, height=30, font=("Consolas", 11)
+            self, wrap=tk.WORD, height=30, font=("Consolas", 11), bg="#1e1e1e", fg="#e0e0e0"
         )
         self.result_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
