@@ -154,3 +154,4 @@ dist
 dist-ssr
 *.local
 HDATE_API_FOR_AIDER.md
+.pre-commit-config.yaml
