@@ -37,7 +37,11 @@ class HebrewDemo(tk.Tk):
         style.configure("TButton", foreground="#e0e0e0", background="#4a90e2")
         style.map("TButton", background=[("active", "#3a7ab5")])
         style.configure("TCombobox", foreground="#e0e0e0", background="#2d2d2d", fieldbackground="#2d2d2d")
-        style.map("TCombobox", background=[("readonly", "#2d2d2d")])
+        style.map("TCombobox", 
+            fieldbackground=[("readonly", "#2d2d2d")],
+            foreground=[("readonly", "#e0e0e0")],
+            background=[("readonly", "#2d2d2d")]
+        )
 
     def _build_ui(self) -> None:
         ttk.Label(self, text="Gregorian Date:").pack(pady=5)
@@ -129,3 +133,4 @@ class HebrewDemo(tk.Tk):
             f"Powered by py-libhdate (fully offline).\n"
         )
 
+```
