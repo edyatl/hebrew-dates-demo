@@ -56,7 +56,24 @@ class HebrewDemo(tk.Tk):
 
     def _build_ui(self) -> None:
         ttk.Label(self, text="Gregorian Date:").pack(pady=5)
-        self.date_entry = DateEntry(self, width=12, bg="#1e1e1e", fg="#e0e0e0", borderwidth=2, date_pattern="yyyy-MM-dd", header_color="#4a90e2", calendar_color="#2d2d2d", selectbackground="#4a90e2", selectforeground="#e0e0e0")
+        self.date_entry = DateEntry(
+            self, 
+            width=12, 
+            bg="#2d2d2d",
+            fg="#e0e0e0",
+            borderwidth=2, 
+            date_pattern="yyyy-MM-dd", 
+            headersbackground="#1e1e1e",
+            headersforeground="#ffffff",
+            selectbackground="#4a90e2",
+            selectforeground="#ffffff",
+            normalbackground="#2d2d2d",
+            normalforeground="#e0e0e0",
+            weekendbackground="#2d2d2d",
+            weekendforeground="#e0e0e0",
+            othermonthbackground="#252525",
+            othermonthforeground="#808080"
+        )
         self.date_entry.set_date(date.today())
         self.date_entry.pack()
 
@@ -144,3 +161,4 @@ class HebrewDemo(tk.Tk):
             f"Powered by py-libhdate (fully offline).\n"
         )
 
+```
