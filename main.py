@@ -1,4 +1,9 @@
 from hdate_demo_app import HebrewDemo
+import tkinter as tk
+
+root = tk.Tk()
+root.tk.call("tk", "scaling", 1.5)
+root.destroy()
 
 
 def run_app():
