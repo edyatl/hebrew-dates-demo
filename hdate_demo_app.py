@@ -1,79 +1,119 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-import hdate
+from tkinter import messagebox, ttk
 from datetime import date
 
+from hdate import HDateInfo, HebrewDate, Location, Zmanim
+
+# (lat, lon, timezone, altitude_m, diaspora)
+LOCATIONS: dict[str, tuple[float, float, str, int, bool]] = {
+    "Jerusalem": (31.778, 35.236, "Asia/Jerusalem", 750, False),
+    "Tel Aviv": (32.085, 34.781, "Asia/Jerusalem", 20, False),
+    "New York": (40.713, -74.006, "America/New_York", 10, True),
+    "London": (51.507, -0.128, "Europe/London", 35, True),
+}
+
+_FALLBACK = LOCATIONS["Jerusalem"]
+
+
 class HebrewDemo(tk.Tk):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.title("Hebrew Dates Demo - Powered by hdate")
         self.geometry("820x680")
-        
-        # Presets
-        self.locations = {
-            "Jerusalem": (31.778, 35.236, "Asia/Jerusalem", 750),
-            "Tel Aviv": (32.085, 34.781, "Asia/Jerusalem", 20),
-            "New York": (40.713, -74.006, "America/New_York", 10),
-            "London": (51.507, -0.128, "Europe/London", 35),
-            # add more...
-        }
-        
-        self.create_widgets()
-    
-    def create_widgets(self):
-        # Date input
-        ttk.Label(self, text="Gregorian Date:").pack(pady=5)
+        self._build_ui()
+
+    # ------------------------------------------------------------------
+    # UI construction
+    # ------------------------------------------------------------------
+
+    def _build_ui(self) -> None:
+        ttk.Label(self, text="Gregorian Date (YYYY-MM-DD):").pack(pady=5)
         self.date_entry = ttk.Entry(self)
-        self.date_entry.insert(0, date.today().strftime("%Y-%m-%d"))
+        self.date_entry.insert(0, date.today().isoformat())
         self.date_entry.pack()
-        
-        # Location
+
         ttk.Label(self, text="Location:").pack(pady=5)
         self.loc_var = tk.StringVar(value="New York")
-        loc_combo = ttk.Combobox(self, textvariable=self.loc_var, values=list(self.locations.keys()))
-        loc_combo.pack()
-        
-        ttk.Button(self, text="Calculate", command=self.calculate).pack(pady=15)
-        
-        # Results area
-        self.result_text = tk.Text(self, wrap=tk.WORD, height=30, font=("Consolas", 11))
+        ttk.Combobox(
+            self,
+            textvariable=self.loc_var,
+            values=list(LOCATIONS),
+            state="readonly",
+        ).pack()
+
+        ttk.Button(self, text="Calculate", command=self._calculate).pack(pady=15)
+
+        self.result_text = tk.Text(
+            self, wrap=tk.WORD, height=30, font=("Consolas", 11)
+        )
         self.result_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-    
-    def calculate(self):
+
+    # ------------------------------------------------------------------
+    # Core logic
+    # ------------------------------------------------------------------
+
+    def _calculate(self) -> None:
         try:
             gdate = date.fromisoformat(self.date_entry.get().strip())
-            loc_name = self.loc_var.get()
-            lat, lon, tz, elev = self.locations.get(loc_name, (31.778, 35.236, "Asia/Jerusalem", 750))
-            
-            loc = hdate.Location(name=loc_name, latitude=lat, longitude=lon,
-                               timezone=tz, altitude=elev, diaspora=False)
-            
-            h = hdate.HDateInfo(date=gdate, location=loc)                    # Basic Hebrew date
-            
-            sunrise = h.zmanim.get('sunrise', 'Not available')
-            sunset = h.zmanim.get('sunset', 'Not available')
-            
-            # Bar Mitzvah (simple +13 Hebrew years)
-            bm_heb = h.hdate.replace(year=h.hdate.year + 13)  # rough, you can refine
-            
-            output = f"""RESULTS for {gdate}
+            output = self._build_output(gdate, self.loc_var.get())
+        except Exception as exc:  # noqa: BLE001
+            messagebox.showerror("Error", str(exc))
+            return
 
-Hebrew Date:
-{h.hdate}
+        self.result_text.delete("1.0", tk.END)
+        self.result_text.insert(tk.END, output)
 
-Zmanim ({loc_name}):
-Sunrise:     {sunrise}
-Sunset:      {sunset}
-Nightfall:   Not available
+    def _build_output(self, gdate: date, loc_name: str) -> str:
+        lat, lon, tz, elev, diaspora = LOCATIONS.get(loc_name, _FALLBACK)
 
-Bar Mitzvah Date (approx +13 Hebrew years):
-{bm_heb}
+        loc = Location(
+            name=loc_name,
+            latitude=lat,
+            longitude=lon,
+            timezone=tz,
+            altitude=elev,
+            diaspora=diaspora,
+        )
 
-This demo runs 100% locally using the py-libhdate library.
-"""
-            self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, output)
-            
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
-```
+        h = HDateInfo(date=gdate, diaspora=diaspora)
+        z = Zmanim(date=gdate, location=loc)
+
+        zmanim_dict = z.zmanim
+        sunrise = zmanim_dict.get("sunrise") or "Not available"
+        sunset = zmanim_dict.get("sunset") or "Not available"
+        candle_lighting = z.candle_lighting or "Not available"
+        havdalah = z.havdalah or "Not available"
+
+        birth_heb = HebrewDate.from_gdate(gdate)
+        bar_mitzvah_heb = birth_heb.replace(year=birth_heb.year + 13)
+        bar_mitzvah_greg = bar_mitzvah_heb.to_gdate()
+
+        holidays = ", ".join(str(hol) for hol in h.holidays) or "None"
+        parasha = h.parasha or "None"
+
+        return (
+            f"RESULTS for {gdate}\n"
+            f"\n"
+            f"Hebrew Date:\n"
+            f"  {h.hdate}\n"
+            f"\n"
+            f"Shabbat / Holiday:\n"
+            f"  Is Shabbat:  {h.is_shabbat}\n"
+            f"  Is Yom Tov:  {h.is_yom_tov}\n"
+            f"  Holidays:    {holidays}\n"
+            f"  Parasha:     {parasha}\n"
+            f"\n"
+            f"Zmanim ({loc_name}):\n"
+            f"  Sunrise:          {sunrise}\n"
+            f"  Sunset:           {sunset}\n"
+            f"  Candle Lighting:  {candle_lighting}\n"
+            f"  Havdalah:         {havdalah}\n"
+            f"\n"
+            f"Bar/Bat Mitzvah date if born on {gdate}\n"
+            f"  Hebrew: {bar_mitzvah_heb}\n"
+            f"  Gregorian (approx): {bar_mitzvah_greg}\n"
+            f"\n"
+            f"Powered by py-libhdate (fully offline).\n"
+        )
+
+
