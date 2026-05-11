@@ -117,4 +117,4 @@ class HebrewDemo(tk.Tk):
             f"\n"
             f"Powered by py-libhdate (fully offline).\n"
         )
-```
+
