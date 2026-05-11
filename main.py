@@ -1,5 +1,6 @@
-from hdate_demo_app import HebrewDemo
 import tkinter as tk
+
+from hdate_demo_app import HebrewDemo
 
 root = tk.Tk()
 root.tk.call("tk", "scaling", 1.5)

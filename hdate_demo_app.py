@@ -45,6 +45,7 @@ class HebrewDemo(tk.Tk):
 
     def set_window_icon(self):
             """Set application icon with fallback"""
+
             try:
                 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
                 icon_path = os.path.join(base_path, "assets", "icon.png")
