@@ -87,7 +87,6 @@ jobs:
 
       - name: Build app (Windows)
         if: runner.os == 'Windows'
-        shell: pwsh
         run: |
           pyinstaller `
             --noconfirm `
@@ -102,7 +101,6 @@ jobs:
             main.py
 
       - name: Package artifact
-        shell: bash
         run: ${{ matrix.package_cmd }}
 
       - name: Upload build artifact
