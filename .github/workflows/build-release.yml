@@ -16,20 +16,20 @@ jobs:
         include:
           - os: macos-latest
             artifact_name: HebrewDatesDemo-macOS
-            archive_cmd: |
+            package_cmd: |
               cd dist
               zip -r "../HebrewDatesDemo-${VERSION}-macOS.zip" "HebrewDatesDemo.app"
 
           - os: ubuntu-latest
             artifact_name: HebrewDatesDemo-linux
-            archive_cmd: |
+            package_cmd: |
               cd dist
               tar -czf "../HebrewDatesDemo-${VERSION}-linux.tar.gz" HebrewDatesDemo
 
           - os: windows-latest
             artifact_name: HebrewDatesDemo-windows
-            archive_cmd: |
-              powershell Compress-Archive -Path dist/HebrewDatesDemo/* -DestinationPath HebrewDatesDemo-${env:VERSION}-windows.zip
+            package_cmd: |
+              Compress-Archive -Path dist/HebrewDatesDemo/* -DestinationPath HebrewDatesDemo-${env:VERSION}-windows.zip
 
     runs-on: ${{ matrix.os }}
 
@@ -53,36 +53,57 @@ jobs:
           pip install .
           pip install pyinstaller
 
-      - name: Build app (macOS/Linux)
-        if: runner.os != 'Windows'
+      - name: Build app (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
         run: |
           pyinstaller \
             --noconfirm \
             --clean \
             --windowed \
             --name "HebrewDatesDemo" \
-            --collect-all tkcalendar \
-            --hidden-import babel.numbers \
+            --collect-all=tkcalendar \
+            --collect-all=babel \
+            --hidden-import=babel.numbers \
+            --icon=assets/icon.icns \
+            --add-data="assets:assets" \
+            main.py
+
+      - name: Build app (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          pyinstaller \
+            --noconfirm \
+            --clean \
+            --windowed \
+            --name "HebrewDatesDemo" \
+            --collect-all=tkcalendar \
+            --collect-all=babel \
+            --hidden-import=babel.numbers \
             --icon=assets/icon.png \
             --add-data="assets:assets" \
             main.py
 
       - name: Build app (Windows)
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
           pyinstaller `
             --noconfirm `
             --clean `
             --windowed `
             --name "HebrewDatesDemo" `
-            --collect-all tkcalendar `
-            --hidden-import babel.numbers `
+            --collect-all=tkcalendar `
+            --collect-all=babel `
+            --hidden-import=babel.numbers `
             --icon=assets/icon.ico `
             --add-data "assets;assets" `
             main.py
 
       - name: Package artifact
-        run: ${{ matrix.archive_cmd }}
+        shell: bash
+        run: ${{ matrix.package_cmd }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
