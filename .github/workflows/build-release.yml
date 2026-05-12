@@ -29,7 +29,7 @@ jobs:
           - os: windows-latest
             artifact_name: HebrewDatesDemo-windows
             package_cmd: |
-              Compress-Archive -Path dist/HebrewDatesDemo/* -DestinationPath HebrewDatesDemo-${env:VERSION}-windows.zip
+              powershell Compress-Archive -Path dist/HebrewDatesDemo/* -DestinationPath HebrewDatesDemo-${env:VERSION}-windows.zip
 
     runs-on: ${{ matrix.os }}
 
