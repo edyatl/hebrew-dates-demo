@@ -94,7 +94,7 @@ pip install .[dev]
 
 ## Build with PyInstaller
 
-### macOS / Linux
+### macOS
 
 ```bash
 pyinstaller \
@@ -102,8 +102,27 @@ pyinstaller \
   --clean \
   --windowed \
   --name "HebrewDatesDemo" \
-  --collect-all tkcalendar \
-  --hidden-import babel.numbers \
+  --collect-all=tkcalendar \
+  --collect-all=babel \
+  --hidden-import=babel.numbers \
+  --icon=assets/icon.icns \
+  --add-data="assets:assets" \
+  main.py
+```
+
+### Linux
+
+```bash
+pyinstaller \
+  --noconfirm \
+  --clean \
+  --windowed \
+  --name "HebrewDatesDemo" \
+  --collect-all=tkcalendar \
+  --collect-all=babel \
+  --hidden-import=babel.numbers \
+  --icon=assets/icon.png \
+  --add-data="assets:assets" \
   main.py
 ```
 
@@ -115,8 +134,11 @@ pyinstaller `
   --clean `
   --windowed `
   --name "HebrewDatesDemo" `
-  --collect-all tkcalendar `
-  --hidden-import babel.numbers `
+  --collect-all=tkcalendar `
+  --collect-all=babel `
+  --hidden-import=babel.numbers `
+  --icon=assets/icon.ico `
+  --add-data "assets;assets" `
   main.py
 ```
 
@@ -128,33 +150,11 @@ dist/
 
 ---
 
-# GitHub Actions
-
-The repository contains automated GitHub Actions workflows that:
-
-- build macOS bundles
-    
-- build Linux bundles
-    
-- build Windows bundles
-    
-- create GitHub Releases automatically for every pushed git tag
-    
-
-Example:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
----
-
 # Download Prebuilt Versions
 
 Prebuilt binaries are available in:
 
-## GitHub Releases
+## GitHub [Releases](https://github.com/edyatl/hebrew-dates-demo/releases)
 
 - macOS `.zip`
     
